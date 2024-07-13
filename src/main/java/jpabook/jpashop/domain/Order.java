@@ -1,7 +1,9 @@
 package jpabook.jpashop.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ import java.util.List;
 @Table(name = "orders")
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order {
 
     @Id
@@ -66,7 +69,7 @@ public class Order {
 
     //== 비즈니스 로직 ==//
     /**
-     *
+     * 주문 취소
      */
     public void cancel() {
         if (delivery.getStatus() == DeliveryStatus.COMP) {
@@ -84,7 +87,7 @@ public class Order {
 
         /**
          * 전체 주문 가격 조회
-          */
+         */
         public int getTotalPrice() {
             int totalPrice = 0;
             for (OrderItem orderItem : orderItems) {
