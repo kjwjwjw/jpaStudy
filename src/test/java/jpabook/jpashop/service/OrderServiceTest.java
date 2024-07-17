@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import org.junit.jupiter.api.Test;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,7 +45,7 @@ class OrderServiceTest {
 
         assertEquals(OrderStatus.ORDER, getOrder.getStatus(), "상품 주문시 상태는 Order");
         assertEquals(1, getOrder.getOrderItems().size(), "주문한 상품 종류 수가 정확해야 한다.");
-        assertEquals( 10000* orderCount, book.getStockQuantity() , "주문 수량만큼 재고가 줄어야 한다.");
+        assertEquals( 10000 * orderCount, getOrder.getTotalPrice() , "주문 수량만큼 재고가 줄어야 한다.");
         assertEquals(8, book.getStockQuantity(),"주문 수량만큼 재고가 줄어야 한다.");
     }
 
@@ -55,10 +55,22 @@ class OrderServiceTest {
     @Test
     public void 주문취소() throws Exception {
         //given
+        Member member = createMember();
+        Book item = createBook("시골 JPA", 10000, 10);
 
+        int orderCount = 2;
+
+        Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
         //when
 
+        orderService.cancelOrder(orderId);
+
+
         //then
+        Order getOrder = orderRepository.findOne(orderId);
+
+        assertEquals(OrderStatus.CANCEL, getOrder.getStatus(),"주문 취소시 상태는 CANCEL 이다.");
+        assertEquals(10, item.getStockQuantity(),"주문 취소시 상태는 CANCEL 이다.");
 
     }
 
@@ -71,10 +83,9 @@ class OrderServiceTest {
         int orderCount = 11;
 
         //when
-        assertThrows(NotEnoughStockException.class, (ThrowingRunnable) () -> orderService.order(member.getId(), item.getId(), orderCount));
+        assertThrows(NotEnoughStockException.class,  () -> orderService.order(member.getId(), item.getId(), orderCount));
         //then
         //then
-
 
 
     }
