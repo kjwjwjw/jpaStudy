@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class Order {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Delivery delivery;
 
     private LocalDateTime orderDate; // 주문시간
